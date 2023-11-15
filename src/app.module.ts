@@ -22,7 +22,7 @@ import { Report } from './reports/report.entity';
     ReportsModule,
     UsersModule,
   ],
-  controllers: [AppController, UsersController, ReportsController],
-  providers: [AppService, ReportsService, UsersService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
