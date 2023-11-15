@@ -12,7 +12,26 @@ export class UsersService {
     this.repo.save(user);
   }
 
-  // find(email: string) {
-  //   return this.repo.find({ where: { email } });
-  // }
+  findOne(id: number) {
+    return this.repo.findOneBy({ id });
+  }
+
+  find(email: string) {
+    return this.repo.find({ where: { email } });
+  }
+
+  // attribute:Partial<User> let us provide only a part of the entity we're updating
+  async update(id: number, attribute: Partial<User>) {
+    const userToUpdate = await this.findOne(id);
+
+    if (!userToUpdate) {
+      throw new Error('user not found');
+    }
+
+    //Assign properties in 'attribute' to userToUpdate
+    Object.assign(userToUpdate, attribute);
+    this.repo.save(userToUpdate);
+  }
+
+  //TODO remove() {}
 }
