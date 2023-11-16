@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,26 +8,31 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UsersService } from './users.service';
-import {
-  Serialize,
-  SerializeInterceptor,
-} from 'src/interceptors/serialize.interceptor';
 import { UserReponseDto } from './dtos/user-response.dto';
+import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 // apply interceptor to all controller responses
-//@Serialize(UserReponseDto)
+@Serialize(UserReponseDto)
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/signup')
   CreateUser(@Body() body: CreateUserDTO) {
-    return this.userService.create(body.email, body.password);
+    return this.authService.signUp(body.email, body.password);
+  }
+
+  @Post('/signin')
+  signIn(@Body() body: CreateUserDTO) {
+    return this.authService.signIn(body.email, body.password);
   }
   @Get('/:id')
   @Serialize(UserReponseDto)
@@ -41,6 +45,7 @@ export class UsersController {
     return user;
   }
   @Get()
+  @Serialize(UserReponseDto)
   findAllUser(@Query('email') email: string) {
     return this.userService.find(email);
   }
