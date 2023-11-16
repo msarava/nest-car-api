@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDTO } from './dtos/create-user.dto';
@@ -25,14 +26,28 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Get('/me')
+  async getMe(@Session() session: any) {
+    return this.userService.findOne(session.userId);
+  }
+
   @Post('/signup')
-  CreateUser(@Body() body: CreateUserDTO) {
-    return this.authService.signUp(body.email, body.password);
+  async createUser(@Body() body: CreateUserDTO, @Session() session: any) {
+    const user = await this.authService.signUp(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  signIn(@Body() body: CreateUserDTO) {
-    return this.authService.signIn(body.email, body.password);
+  async signIn(@Body() body: CreateUserDTO, @Session() session: any) {
+    const user = await this.authService.signIn(body.email, body.password);
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('/signout')
+  signOut(@Session() session: any) {
+    session.userId = null;
   }
   @Get('/:id')
   @Serialize(UserReponseDto)
