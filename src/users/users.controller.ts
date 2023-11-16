@@ -9,6 +9,8 @@ import {
   Post,
   Query,
   Session,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
@@ -18,6 +20,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserReponseDto } from './dtos/user-response.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
+import { AuthGuard } from 'src/guards/auth.guards';
 
 @Controller('auth')
 // apply interceptor to all controller responses
@@ -33,8 +36,8 @@ export class UsersController {
     return this.userService.findOne(session.userId);
   }
   @Get('/me')
+  @UseGuards(AuthGuard)
   async getMe(@CurrentUser() user: User) {
-    if (!user) throw new NotFoundException();
     return user;
   }
 
