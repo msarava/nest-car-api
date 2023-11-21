@@ -12,7 +12,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDTO } from './dtos/create-user.dto';
@@ -20,7 +20,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserReponseDto } from './dtos/user-response.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
-import { AuthGuard } from 'src/guards/auth.guards';
+import { AuthGuard } from '../guards/auth.guards';
 
 @Controller('auth')
 // apply interceptor to all controller responses
